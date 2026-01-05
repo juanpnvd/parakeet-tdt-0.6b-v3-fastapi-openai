@@ -753,7 +753,9 @@
                     if (progress.partial_text && progress.partial_text.length > 0) {
                         resultContainer.style.display = 'block';
                         chatOutput.innerHTML = `<div class="message-bubble" style="white-space: pre-wrap;">${progress.partial_text}</div>`;
-                        chatOutput.scrollTo({ top: chatOutput.scrollHeight, behavior: 'smooth' });
+                        if (document.getElementById('autoScroll').checked) {
+                            chatOutput.scrollTo({ top: chatOutput.scrollHeight, behavior: 'smooth' });
+                        }
                     }
                 } else if (progress.status === 'complete') {
                     progressBar.style.width = '100%';
@@ -803,7 +805,9 @@
                     chatOutput.appendChild(div);
                 });
 
-                chatOutput.scrollTo({ top: chatOutput.scrollHeight, behavior: 'smooth' });
+                if (document.getElementById('autoScroll').checked) {
+                    chatOutput.scrollTo({ top: chatOutput.scrollHeight, behavior: 'smooth' });
+                }
             }
 
             function formatTime(seconds) {
@@ -829,13 +833,15 @@
 
             // Export Actions
             document.getElementById('copyBtn').onclick = () => {
-                const text = currentData.segments.map(s => `[${speakerNames[s.speaker] || s.speaker}] ${s.text}`).join('\n');
+                // Return only the text, no speaker tags, no undefined checks needed for speaker names
+                const text = currentData.segments.map(s => s.text).join('\n');
                 navigator.clipboard.writeText(text);
                 showToast('Data copied to buffer.');
             };
 
             document.getElementById('saveTxtBtn').onclick = () => {
-                const text = currentData.segments.map(s => `[${speakerNames[s.speaker] || s.speaker}] ${s.text}`).join('\n');
+                // Return only the text, no speaker tags
+                const text = currentData.segments.map(s => s.text).join('\n');
                 download(text, 'transcription.txt');
             };
 

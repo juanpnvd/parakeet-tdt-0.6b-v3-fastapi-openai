@@ -9,6 +9,8 @@ A high-performance, OpenAI-compatible local speech transcription service using t
 -   **OpenAI Compatible**: Drop-in replacement for OpenAI's `/v1/audio/transcriptions` endpoint.
 -   **Web Interface**: Simple drag-and-drop UI for easy testing.
 -   **Sanitized Output**: Automatically improved spacing and punctuation.
+-   **API Documentation**: Interactive Swagger UI at `/docs`.
+-   **Enhanced Frontend**: Auto-scroll toggle and plain-text export options.
 
 ## 📊 Benchmarks
 
@@ -98,6 +100,9 @@ This server provides an OpenAI-compatible endpoint.
 
 ### Endpoint
 `POST /v1/audio/transcriptions`
+
+### Interactive Documentation
+Visit [http://127.0.0.1:5092/docs](http://127.0.0.1:5092/docs) for the Swagger UI.
 
 ### Parameters
 | Parameter | Type | Default | Description |

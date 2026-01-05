@@ -177,6 +177,81 @@ def health():
     )
 
 
+@app.route("/docs")
+def swagger_ui():
+    """Serve Swagger UI"""
+    return render_template("swagger.html")
+
+
+@app.route("/openapi.json")
+def openapi_spec():
+    """Return OpenAPI Specification"""
+    return jsonify({
+        "openapi": "3.0.0",
+        "info": {
+            "title": "Parakeet Transcription API",
+            "description": "High-performance ONNX-optimized speech transcription API compatible with OpenAI.",
+            "version": "1.0.0"
+        },
+        "servers": [{"url": "http://100.85.200.51:5092"}],
+        "paths": {
+            "/v1/audio/transcriptions": {
+                "post": {
+                    "summary": "Transcribe Audio",
+                    "description": "Transcribes audio into the input language. Supports real-time streaming progress.",
+                    "operationId": "transcribe_audio",
+                    "requestBody": {
+                        "content": {
+                            "multipart/form-data": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "file": {
+                                            "type": "string",
+                                            "format": "binary",
+                                            "description": "The audio file object (not file name) to transcribe."
+                                        },
+                                        "model": {
+                                            "type": "string",
+                                            "default": "whisper-1",
+                                            "description": "ID of the model to use."
+                                        },
+                                        "response_format": {
+                                            "type": "string",
+                                            "default": "json",
+                                            "enum": ["json", "text", "srt", "verbose_json", "vtt"],
+                                            "description": "The format of the transcript output."
+                                        }
+                                    },
+                                    "required": ["file"]
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "Successful Response",
+                            "content": {
+                                "application/json": {
+                                    "schema": {
+                                        "type": "object",
+                                        "properties": {
+                                            "text": {"type": "string"}
+                                        }
+                                    }
+                                },
+                                "text/plain": {
+                                    "schema": {"type": "string"}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    })
+
+
 @app.route("/progress/<job_id>")
 def get_progress(job_id):
     """Get transcription progress for a job"""
