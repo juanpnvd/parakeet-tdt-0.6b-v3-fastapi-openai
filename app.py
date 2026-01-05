@@ -1,6 +1,6 @@
 host = "0.0.0.0"
 port = 5092
-threads = 4  # Original value that worked well
+threads = 8  # Optimized for 8 P-cores
 CHUNK_MINITE = 1  # 1-minute chunks for real-time streaming
 
 import sys
@@ -15,6 +15,7 @@ import datetime
 import psutil
 from werkzeug.utils import secure_filename
 
+import flask
 from flask import Flask, request, jsonify, render_template, Response
 from waitress import serve
 from pathlib import Path
@@ -49,7 +50,7 @@ try:
     # Configure session options
     sess_options = ort.SessionOptions()
     if "CPUExecutionProvider" in providers_to_try[0]:
-        sess_options.intra_op_num_threads = 4
+        sess_options.intra_op_num_threads = 8
         sess_options.inter_op_num_threads = 1
     
     asr_model = onnx_asr.load_model(
@@ -162,6 +163,11 @@ def segments_to_vtt(segments: list) -> str:
 @app.route("/")
 def index():
     return render_template("index.html")
+
+
+@app.route("/parakeet.png")
+def serve_logo():
+    return flask.send_file("parakeet.png", mimetype="image/png")
 
 
 @app.route("/health")
