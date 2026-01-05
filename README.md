@@ -141,7 +141,7 @@ Access it at: **[http://127.0.0.1:5092](http://127.0.0.1:5092)**
     The server will be available at `http://127.0.0.1:5092`
 
 2.  **Configure Open WebUI**:
-    - Navigate to **Open WebUI Settings → Audio**
+    - Navigate to **Open WebUI Settings -> Audio**
     - Set **STT Engine** to `OpenAI`
     - Set **OpenAI Base URL** to `http://127.0.0.1:5092/v1`
     - Set **OpenAI API Key** to `sk-no-key-required`
