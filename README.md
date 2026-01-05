@@ -3,9 +3,41 @@
 [![Python 3.10](https://img.shields.io/badge/python-3.10-blue.svg)](https://www.python.org/downloads/release/python-3100/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Parakeet TDT** is a high-performance implementation of NVIDIA's [Parakeet TDT 1.1B](https://huggingface.co/nvidia/parakeet-tdt-1.1b) model using [ONNX Runtime](https://onnxruntime.ai/), designed for ultra-fast inference on CPU.
+**Parakeet TDT** is a high-performance implementation of NVIDIA's [Parakeet TDT 0.6B v3](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3) model using [ONNX Runtime](https://onnxruntime.ai/), designed for ultra-fast inference on CPU.
 
 This implementation achieves exceptional real-time speeds, outperforming standard [openai/whisper](https://github.com/openai/whisper) and competing directly with GPU-accelerated [faster-whisper](https://github.com/SYSTRAN/faster-whisper) implementations while running entirely on consumer CPUs. The efficiency is achieved through the architectural advantages of the Token-and-Duration Transducer (TDT) model combined with 8-bit quantization.
+
+## 🌍 Multilingual Support
+
+**Parakeet TDT 0.6B v3** features robust multilingual capabilities with **automatic language detection**. The model can automatically identify and transcribe speech in any of the **25 supported European languages** without requiring manual language specification:
+
+- 🇧🇬 Bulgarian
+- 🇭🇷 Croatian
+- 🇨🇿 Czech
+- 🇩🇰 Danish
+- 🇳🇱 Dutch
+- 🇬🇧 English
+- 🇪🇪 Estonian
+- 🇫🇮 Finnish
+- 🇫🇷 French
+- 🇩🇪 German
+- 🇬🇷 Greek
+- 🇭🇺 Hungarian
+- 🇮🇹 Italian
+- 🇱🇻 Latvian
+- 🇱🇹 Lithuanian
+- 🇲🇹 Maltese
+- 🇵🇱 Polish
+- 🇵🇹 Portuguese (European)
+- 🇷🇴 Romanian
+- 🇷🇺 Russian
+- 🇸🇰 Slovak
+- 🇸🇮 Slovenian
+- 🇪🇸 Spanish
+- 🇸🇪 Swedish
+- 🇺🇦 Ukrainian
+
+Simply send audio in any of these languages, and the model will automatically detect and transcribe it with high accuracy, including proper punctuation and capitalization.
 
 ## Benchmark
 
@@ -17,8 +49,8 @@ The metric used is **Speedup Factor** (Audio Duration / Processing Time). Higher
 
 | Implementation | Hardware | Model | Precision | Speedup |
 | --- | --- | --- | --- | --- |
-| **Parakeet TDT** (Ours) | **CPU** (i7-12700KF) | **TDT 1.1B** | **int8** | **~29.7x** |
-| **Parakeet TDT** (Ours) | **CPU** (i7-4790) | **TDT 1.1B** | **int8** | **~17.6x** |
+| **Parakeet TDT** (Ours) | **CPU** (i7-12700KF) | **TDT 0.6B v3** | **int8** | **~29.7x** |
+| **Parakeet TDT** (Ours) | **CPU** (i7-4790) | **TDT 0.6B v3** | **int8** | **~17.0x** |
 | faster-whisper | GPU (RTX 3070 Ti) | Large-v2 | int8 | 13.2x |
 | faster-whisper | GPU (RTX 3070 Ti) | Large-v2 | fp16 | 12.4x |
 | faster-whisper | CPU (i7-12700K) | Small | int8 | 7.6x |
@@ -95,19 +127,43 @@ print(transcript)
 The server includes a built-in web interface for testing and easy drag-and-drop transcription.
 Access it at: **[http://127.0.0.1:5092](http://127.0.0.1:5092)**
 
-## Open WebUI Integration
+## 🔌 Open WebUI Integration
 
-This project is designed to be a drop-in replacement for OpenAI in **Open WebUI**.
+**This project provides out-of-the-box compatibility with [Open WebUI](https://openwebui.com/)**, serving as a drop-in replacement for OpenAI's speech-to-text API. Experience lightning-fast, local transcription across 25 languages with automatic language detection!
 
-1.  Go to **Open WebUI Settings > Audio**.
-2.  Set **STT Engine** to `OpenAI`.
-3.  Set **OpenAI Base URL** to `http://127.0.0.1:5092/v1`.
-4.  Set **OpenAI API Key** to `sk-no-key-required`.
-5.  Set **STT Model** to `parakeet-tdt-0.6b-v3`.
-6.  Click **Save**.
+### Setup Instructions
 
-Now, all voice interactions in Open WebUI will be transcribed locally by Parakeet TDT at lightning speeds.
+1.  **Start the Parakeet Server** (if not already running):
+    ```bash
+    conda activate parakeet-onnx
+    python app.py
+    ```
+    The server will be available at `http://127.0.0.1:5092`
+
+2.  **Configure Open WebUI**:
+    - Navigate to **Open WebUI Settings → Audio**
+    - Set **STT Engine** to `OpenAI`
+    - Set **OpenAI Base URL** to `http://127.0.0.1:5092/v1`
+    - Set **OpenAI API Key** to `sk-no-key-required`
+    - Set **STT Model** to `parakeet-tdt-0.6b-v3`
+    - Click **Save**
+
+3.  **Start Using Voice!**
+    - All voice interactions in Open WebUI will now be transcribed locally
+    - Enjoy real-time transcription speeds (up to 30x faster than real-time on modern CPUs)
+    - Automatic language detection across all 25 supported languages
+    - Complete privacy - all processing happens locally on your machine
 
 ## Model details
 
-When running the application, the ONNX models are automatically loaded from the `models/` directory. The primary model used is the **Parakeet TDT 1.1B** converted to ONNX with INT8 quantization, providing the optimal balance of speed and accuracy for English speech recognition.
+When running the application, the ONNX models are automatically loaded from the `models/` directory. The primary model used is the **Parakeet TDT 0.6B v3** converted to ONNX with INT8 quantization, providing the optimal balance of speed and accuracy for multilingual speech recognition across 25 European languages.
+
+## 🙏 Acknowledgments
+
+This project stands on the shoulders of giants and wouldn't be possible without:
+
+- **[Shadowfita](https://github.com/Shadowfita/parakeet-tdt-0.6b-v2-fastapi)** - For the original FastAPI implementation that served as the foundation for this project
+- **[NVIDIA](https://huggingface.co/nvidia/parakeet-tdt-0.6b-v3)** - For developing and open-sourcing the exceptional Parakeet TDT model family
+- **[groxaxo](https://github.com/groxaxo)** - The mastermind behind this project, bringing together ONNX optimization, multilingual support, and seamless OpenAI API compatibility
+
+Thank you to all contributors and the open-source community for making high-performance, local speech recognition accessible to everyone!
